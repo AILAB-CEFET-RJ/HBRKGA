@@ -28,21 +28,11 @@ int main(int argc, char *argv[]){
 		time_t seed;
 		srand(time(0)); 
 		seed = time(0);
-		//seed = 123;
 
 		Tempo.start();
-		cout<<"Vai comecar o Algoritmo Genetico"<<endl;
-		AG Meta(EliteSet,num_par,10,0.2,0.1,0.7,1,1,seed,0,2,5,6); //Populacao tamanho 10 com 6 geracoes Random Walk
+		AG Meta(EliteSet,num_par,10,0.2,0.1,0.7,1,1,seed,0,2,5,6); 
+		//Pop size 10 / 6 generations plus RW
 		Meta.solve();
-		cout<<"Acabou o Algoritmo Genetico!"<<endl;
-
-		//cout<<*EliteSet<<endl;
-
-		//PathRelinking * PR = new PathRelinking(EliteSet);
-
-		//Solution* BestSol;
-
-		//BestSol = PR->solve(Meta.getBest());
 
 		Tempo.stop();
 
@@ -51,10 +41,7 @@ int main(int argc, char *argv[]){
 		cout<<Tempo.getStopTime()<<endl;
 		cout<<"--------------------------------------------------"<<endl;
 
-		//delete PR;
-		//delete BestSol;
 		delete EliteSet;
 	}
-
 	return 0;
 }
