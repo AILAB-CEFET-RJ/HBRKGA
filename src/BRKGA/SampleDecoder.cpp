@@ -37,15 +37,6 @@ double SampleDecoder::decode(std::vector< double >& chromosome) const {
 		}
 	}
 	double fitness = BL->search(parameter);
-	/*
-	for (unsigned i = 0; i < n; ++i) {
-		sol.add_param(parameter[i]);
-		if (i>2){
-			chromosome[i] = ceil((parameter[i]/((par_dom[i].second-par_dom[i].first) + par_dom[i].first))*1000000)/1000000;
-		} else {
-			chromosome[i] = ceil(parameter[i]/((par_dom[i].second-par_dom[i].first) + par_dom[i].first));
-		}
-	} */
 
 	for (unsigned i = 0; i < n; ++i) {
 		sol.add_param(parameter[i]);
@@ -54,8 +45,7 @@ double SampleDecoder::decode(std::vector< double >& chromosome) const {
 
 	sol.set_cost(fitness);
 
-	cout<<sol<<endl;
-	//cout<<"fitness"<<fitness<<endl;
+	cout<< "Best Random-Walk solution: \n"<<sol << "\n" <<endl;
 
 	EliteSet->add(sol);
 
