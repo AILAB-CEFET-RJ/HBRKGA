@@ -53,9 +53,7 @@ class AG{
 	
 	decoder = new SampleDecoder(EliteSet, BL);
 	
-	cout<<"Vai iniciar o SampleDecoder!"<<endl;
 	algorithm = new BRKGA< SampleDecoder, MTRand > (n, p, pe, pm, rhoe, (*decoder), (*rng), K, MAXT);
-	cout<<"Acabou o SampleDecoder!"<<endl;
 
 	};
 
@@ -71,7 +69,7 @@ class AG{
 		FWChrono Tempo;
 		Tempo.start();
 		do {
-			cout<<"Inicio da geracao numero " << generation+1 <<endl;
+			cout<<"Starting generation number " << generation+1 <<endl;
 			algorithm->evolve();	// evolve the population for one generation
 			
 			if((++generation) % X_INTVL == 0) {
@@ -79,17 +77,10 @@ class AG{
 			}
 			
 			cout<< getBest()<<endl;
-			cout<<"Fim da geracao numero " << generation <<endl;
+			cout<<"End of generation number " << generation <<endl;
 		} while (generation < MAX_GENS);
 
-		/*int cont=0;
-		vector<double> bestsol = algorithm->getBestChromosome();
-		for(auto it = bestsol.begin(); it!= bestsol.end(); it++){
-			cout<<*it*(par_dom[cont].second-par_dom[cont].first) + par_dom[cont].first<<" ";
-			++cont;
-		}
-		cout<<endl;*/
-		std::cout << "Melhor Sol BRKGA = "	<< -algorithm->getBestFitness() << std::endl;
+		std::cout << "Best Solution HBRKGA = "	<< -algorithm->getBestFitness() << std::endl;
 		Tempo.stop();
 	};
 
