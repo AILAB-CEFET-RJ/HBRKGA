@@ -6,8 +6,9 @@
 vector<int>  RandomWalk::mov = {-15,-10,-5,5,10,15};
 
 double RandomWalk::search(double * p, int size, int N){
-  //Inicio Random Walk
   double * base = new double [size];
+  double diff=0;
+  double base_mov=0;
 
   uniform_int_distribution<int> distribution(0.0,size-1);
   uniform_int_distribution<int> distribution_v(0.0,mov.size()-1);
@@ -17,12 +18,50 @@ double RandomWalk::search(double * p, int size, int N){
 
   for(int i = 0; i<size; i++){
     base[i] = p[i];
-    //cout<<base[i]<<" ";
   }
 
   bcost = evaluate(base,size);
-  //COMENTAR DAQUI
+
+//(Round Robin)
   for(int i=0; i<N; i++){
+    index = distribution(*mt);
+    perc =  0.1+mov[distribution_v(*mt)]/100.0;
+    cout << "percentage " << perc << endl;
+    cout << "movement " << mov[distribution_v(*mt)] << endl;
+    cout << "first " << par_dom[index].first << endl;
+    cout << "second " << par_dom[index].second << endl;
+    cout << "base[index] " << base[index] << endl;
+    cout << "index " << index << endl;
+    base_mov = base[index] + (base[index] * perc);
+    cout << "base_mov " << base_mov << endl;
+
+    if( base_mov > par_dom[index].second){
+      diff = base_mov - par_dom[index].second;
+      base[index] = par_dom[index].first + diff;
+      cout << "Round Robin " << endl;
+    }
+    else if(base_mov < par_dom[index].first) {
+      diff = par_dom[index].first - base_mov;
+      base[index] = par_dom[index].first + diff;
+      cout << "Round Robin " << endl;
+    }
+
+    if (index>2) {
+         base[index] = ceil((base_mov) * 1000000)/1000000;
+      } else if (index<=2) {
+          base[index] = ceil(base_mov);
+      }
+
+    cost = evaluate(base,size);
+    if(cost>bcost){
+      p[index] = base[index];
+      bcost = cost;
+    }
+  } //End Roud Robin
+
+
+ //(Min ou Max)
+  /*for(int i=0; i<N; i++){
     index = distribution(*mt);
     //cout << "index " << index << endl;
     perc =  0.1+mov[distribution_v(*mt)]/100.0;
@@ -44,17 +83,17 @@ double RandomWalk::search(double * p, int size, int N){
       p[index] = base[index];
       bcost = cost;
     }
-  } //ATE AQUI
+  } */
+ //(Min ou Max)
 
   delete[] base;
 	return bcost;
 }
 
 double RandomWalk::evaluate(const double * const p, int size){
-	cout << p[0] << " " << p[1] << " " << p[2] << " " << p[3] << " " << p[4] << endl;
+	cout << "***Solution: " <<p[0] << " " << p[1] << " " << p[2] << " " << p[3] << " " << p[4] << endl;
 	ostringstream buffer;
 	buffer.str("");
-  cout<<"###Chamei a Rede Neural via Random Walk!"<<endl;
 	buffer	<< "python ./src/python/neural_network.py fashion"
 			<< " "	<< p[0]
 			<< " "	<< p[1]
@@ -77,7 +116,7 @@ double RandomWalk::evaluate(const double * const p, int size){
 	f_inst >> solution;
 
 	f_inst.close();
-  cout << "***" << solution << endl;
+  cout << "###Evaluated Solution: " << solution << "\n" <<endl;
 
 	return solution;
 }
