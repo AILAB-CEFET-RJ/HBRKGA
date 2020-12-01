@@ -1,6 +1,8 @@
 # HBRKGA
 HBRKGA is a hyperparameter optimization method for Neural Networks based on BRKGA framework (http://mauricio.resende.info/src/brkgaAPI/).
 
+![hbrkga_flux](https://github.com/MLRG-CEFET-RJ/HBRKGA/blob/main/hbrkga.png)
+
 ## Requirements
 
 Python 3.6
