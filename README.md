@@ -1,5 +1,5 @@
 # HBRKGA
-HBRKGA is a hyperparameter optimization method for Neural Networks based on BRKGA framework (http://mauricio.resende.info/src/brkgaAPI/).
+HBRKGA is a hyperparameter optimization method for Neural Networks based on BRKGA framework (http://mauricio.resende.info/src/brkgaAPI/). We have done experiments comparing HBRKGA with some hyperparameter optimization methods. The results and description of our proposal can be found at https://arxiv.org/abs/2011.11062.
 
 ![hbrkga_flux](https://github.com/MLRG-CEFET-RJ/HBRKGA/blob/main/hbrkga.png)
 
@@ -51,6 +51,15 @@ To execute the HBRKGA optimization process:
 nohup ./bin/hypAG > hbrkga.log &
 ```
 
+## Citation
+```
+@article{serqueira2020population,
+  title={A Population-based Hybrid Approach to Hyperparameter Optimization for Neural Networks},
+  author={Serqueira, Marcello and Gonz{\'a}lez, Pedro and Bezerra, Eduardo},
+  journal={arXiv preprint arXiv:2011.11062},
+  year={2020}
+}
+```
 
 ## Contact
 To give your opinion about this work, send an email to `marcello.serqueira@eic.cefet-rj.br`.
