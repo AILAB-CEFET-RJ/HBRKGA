@@ -94,7 +94,7 @@ double RandomWalk::evaluate(const double * const p, int size){
 	cout << "***Solution: " <<p[0] << " " << p[1] << " " << p[2] << " " << p[3] << " " << p[4] << endl;
 	ostringstream buffer;
 	buffer.str("");
-	buffer	<< "python ./src/python/neural_network.py fashion"
+	buffer	<< "python ./src/python/neural_network.py rectangles"
 			<< " "	<< p[0]
 			<< " "	<< p[1]
 			<< " "	<< p[2]

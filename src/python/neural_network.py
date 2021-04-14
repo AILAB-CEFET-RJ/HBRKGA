@@ -31,8 +31,8 @@ if str(sys.argv[1]) == 'cosmos':
   hyper_args = du.hyper_space('cosmos')
 
 if str(sys.argv[1]) == 'rectangles':
-  train_path =  "/mnt/sdb/home2/mserqueira/COSMOS/dataset/rectangles_train.csv" #RECTANGLES
-  test_path = "/mnt/sdb/home2/mserqueira/COSMOS/dataset/rectangles_val.csv"
+  train_path =  "/home/mdevino/dev/ppcic/hbrkga/src/python/datasets/rectangles_train.csv" #RECTANGLES
+  test_path = "/home/mdevino/dev/ppcic/hbrkga/src/python/datasets/rectangles_val.csv"
   hyper_args = du.hyper_space('others')
 
 if str(sys.argv[1]) == 'mnist':
@@ -62,31 +62,31 @@ num_x = trainX.shape[1]
 num_y = trainY.shape[1]
 
 def neural_network(LAYER1, LAYER2, LAYER3, x, y):
-   with tf.device('/device:GPU:0'):
-    W1 = tf.Variable(tf.random_normal([num_x, LAYER1]))
-    b1 = tf.Variable(tf.random_normal([LAYER1]))
-    
-    W2 = tf.Variable(tf.random_normal([LAYER1, LAYER2]))
-    b2 = tf.Variable(tf.random_normal([LAYER2]))
-    
-    W3 = tf.Variable(tf.random_normal([LAYER2, LAYER3]))
-    b3 = tf.Variable(tf.random_normal([LAYER3]))
-    
-    W_out = tf.Variable(tf.random_normal([LAYER3, n_classes]))
-    b_out = tf.Variable(tf.random_normal([n_classes]))
-    
-    Z1 = tf.add(tf.matmul(x, W1), b1)
-    A1 = tf.nn.relu(Z1)
-    
-    Z2 = tf.add(tf.matmul(A1, W2), b2)
-    A2 = tf.nn.relu(Z2)
-    
-    Z3 = tf.add(tf.matmul(A2, W3), b3)
-    A3 = tf.nn.relu(Z3)
-    
-    Z_out = tf.matmul(A3, W_out) + b_out
+  #  with tf.device('/device:GPU:0'):
+  W1 = tf.Variable(tf.random_normal([num_x, LAYER1]))
+  b1 = tf.Variable(tf.random_normal([LAYER1]))
+  
+  W2 = tf.Variable(tf.random_normal([LAYER1, LAYER2]))
+  b2 = tf.Variable(tf.random_normal([LAYER2]))
+  
+  W3 = tf.Variable(tf.random_normal([LAYER2, LAYER3]))
+  b3 = tf.Variable(tf.random_normal([LAYER3]))
+  
+  W_out = tf.Variable(tf.random_normal([LAYER3, n_classes]))
+  b_out = tf.Variable(tf.random_normal([n_classes]))
+  
+  Z1 = tf.add(tf.matmul(x, W1), b1)
+  A1 = tf.nn.relu(Z1)
+  
+  Z2 = tf.add(tf.matmul(A1, W2), b2)
+  A2 = tf.nn.relu(Z2)
+  
+  Z3 = tf.add(tf.matmul(A2, W3), b3)
+  A3 = tf.nn.relu(Z3)
+  
+  Z_out = tf.matmul(A3, W_out) + b_out
 
-    return Z_out, W_out
+  return Z_out, W_out
 
 def models_predictions(prediction, sess, x, y):
   pred_model =  tf.argmax(prediction, 1)
@@ -143,57 +143,57 @@ def get_error(prediction, y, sess, labelX, labelY, x):
   return error
 
 def build_graph(layer1, layer2, layer3, learning_rate, beta):
-    with tf.device('/device:GPU:1'):
-      x = tf.placeholder(tf.float32, [None, num_x])
-      y = tf.placeholder(tf.float32, [None, num_y])
-      lr = tf.placeholder(tf.float32)
-      prediction, weights = neural_network(int(layer1), int(layer2), int(layer3), x, y)
+    # with tf.device('/device:GPU:1'):
+    x = tf.placeholder(tf.float32, [None, num_x])
+    y = tf.placeholder(tf.float32, [None, num_y])
+    lr = tf.placeholder(tf.float32)
+    prediction, weights = neural_network(int(layer1), int(layer2), int(layer3), x, y)
+    
+    loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=prediction, labels=y)) #Ou reduce_sum
+    regularizer = tf.nn.l2_loss(weights) #L2
+    loss = tf.reduce_mean(loss + round(beta, 6) * regularizer)
+    
+    optimizer = tf.train.AdamOptimizer(lr).minimize(loss)
+    loss_train = []
+    loss_test = []
+    f1_best = 0
+
+    with tf.Session() as sess:
+      sess.run(tf.global_variables_initializer())
+      for epoch in range(epochs_no):
+        epoch_loss = 0
+        i=0
+        while i < len(trainX):
+          start = i
+          end = i+batch_size
+          batch_x = np.array(trainX[start:end])
+          batch_y = np.array(trainY[start:end])
+          _, c = sess.run([optimizer, loss], feed_dict={x: batch_x, y: batch_y, lr: round(learning_rate, 6)})
+          epoch_loss += c
+          i+=batch_size
+        early_flag = early_stop(epoch, epoch_loss)
+        f1_epoch = get_f1(prediction, y, sess, predX, predY, x)
+        if f1_epoch > f1_best:
+          f1_best = f1_epoch
+        #if early_flag == False:
+          #print('Epoch ', epoch+1, 'of ', epochs_no, '| loss: ', epoch_loss)
+        if early_flag == True:
+          #print("Early stopping... ", 'Epoch', epoch+1, 'of', epochs_no, '| loss:', epoch_loss)
+          break
       
-      loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=prediction, labels=y)) #Ou reduce_sum
-      regularizer = tf.nn.l2_loss(weights) #L2
-      loss = tf.reduce_mean(loss + round(beta, 6) * regularizer)
-      
-      optimizer = tf.train.AdamOptimizer(lr).minimize(loss)
-      loss_train = []
-      loss_test = []
-      f1_best = 0
+      loss_train.append(get_error(prediction, y, sess, trainX, trainY, x))
+      loss_test.append(get_error(prediction, y, sess, predX, predY, x))
+      #if f1 > best_model: #To save the best model
+        #saver = tf.train.Saver()
+        #saver.save(sess, 'TF_model/sess/AutoML_model.ckpt')
+        #np.savetxt("TF_model/test_classification.csv", pred_model.astype(int), delimiter=",")
+        #print("\nBest model saved in TF_model folder")
 
-      with tf.Session() as sess:
-        sess.run(tf.global_variables_initializer())
-        for epoch in range(epochs_no):
-          epoch_loss = 0
-          i=0
-          while i < len(trainX):
-            start = i
-            end = i+batch_size
-            batch_x = np.array(trainX[start:end])
-            batch_y = np.array(trainY[start:end])
-            _, c = sess.run([optimizer, loss], feed_dict={x: batch_x, y: batch_y, lr: round(learning_rate, 6)})
-            epoch_loss += c
-            i+=batch_size
-          early_flag = early_stop(epoch, epoch_loss)
-          f1_epoch = get_f1(prediction, y, sess, predX, predY, x)
-          if f1_epoch > f1_best:
-            f1_best = f1_epoch
-          #if early_flag == False:
-            #print('Epoch ', epoch+1, 'of ', epochs_no, '| loss: ', epoch_loss)
-          if early_flag == True:
-            #print("Early stopping... ", 'Epoch', epoch+1, 'of', epochs_no, '| loss:', epoch_loss)
-            break
-        
-        loss_train.append(get_error(prediction, y, sess, trainX, trainY, x))
-        loss_test.append(get_error(prediction, y, sess, predX, predY, x))
-        #if f1 > best_model: #To save the best model
-          #saver = tf.train.Saver()
-          #saver.save(sess, 'TF_model/sess/AutoML_model.ckpt')
-          #np.savetxt("TF_model/test_classification.csv", pred_model.astype(int), delimiter=",")
-          #print("\nBest model saved in TF_model folder")
+      sess.close()
 
-        sess.close()
-
-      learning_plot(loss_train, loss_test)
-      print(round(f1_best, 3))
-      return f1_best
+    learning_plot(loss_train, loss_test)
+    print(round(f1_best, 3))
+    return f1_best
 
 def get_f1(prediction, y, sess, predX, predY, x):
   pred_model =  tf.argmax(prediction, 1)
