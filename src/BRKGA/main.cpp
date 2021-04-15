@@ -17,17 +17,3 @@ int main()
 
 	return 0;
 }
-
-int my_main(unsigned n, unsigned p, double pe, double pm, double rhoe,
-				 unsigned k, unsigned maxT, long unsigned rngSeed, unsigned generation,
-				 unsigned xIntvl, unsigned xNumber, unsigned maxGens)
-{
-
-	cout << "Começou!" << endl;
-	AG Meta(n, p, pe, pm, rhoe, k, maxT, rngSeed, generation, xIntvl, xNumber,
-					maxGens);
-
-	Meta.solve();
-
-	cout << "Terminou!" << endl;
-}

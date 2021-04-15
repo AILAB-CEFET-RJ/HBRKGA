@@ -2,10 +2,11 @@
 ###################### MAKE ########################
 ####################################################
 
-EXECUTAVEL = hypAG
+EXECUTAVEL = hbrkga.so
 PATHEXEC = ./bin
 PATHSRC= ./src
 PATHTEMP = ./.temp
+PYTHON_INCLUDES = -I/home/mdevino/anaconda3/envs/hbrkga/include/python3.6m -I/home/mdevino/anaconda3/envs/hbrkga/lib/python3.6/site-packages/pybind11/include
 
 all:
 	mkdir -p $(PATHEXEC)
@@ -51,7 +52,7 @@ clean:
 # Compiler
 CPP = g++
 # Compilation parameters
-CCOPT = -std=c++11 -m64 -O3 -g -fPIC -fexceptions -DIL_STD -pthread #-DDEBUG
+CCOPT = -std=c++11 -shared -m64 -O3 -g -fPIC ${PYTHON_INCLUDES} -fexceptions -DIL_STD -pthread #-DDEBUG
 
 # Header's include path
 CCFLAGS = $(CCOPT)

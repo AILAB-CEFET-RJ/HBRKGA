@@ -1,6 +1,7 @@
 # Files
 src/python/saida.txt
 src/notes
+*.pdf
 
 # Folders
 bin
