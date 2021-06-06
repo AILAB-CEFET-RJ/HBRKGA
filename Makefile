@@ -1,20 +1,13 @@
 ####################################################
 ###################### MAKE ########################
 ####################################################
-CONDA_ENV=h
-# Need to specify bash in order for conda activate to work.
-SHELL=/bin/bash
-# Note that the extra activate is needed to ensure that the activate floats env to the front of PATH
-CONDA_ACTIVATE=source $$(conda info --base)/etc/profile.d/conda.sh && conda activate && conda activate $(CONDA_ENV)
 
-# EXTENSION= # python3-config --extension-suffix
-EXTENSION = .cpython-36m-x86_64-linux-gnu.so
+EXTENSION = # python3-config --extension-suffix
 EXECUTAVEL = hbrkga$(EXTENSION)
 PATHEXEC = ./bin
 PATHSRC= ./src
 PATHTEMP = ./.temp
-# PYTHON_INCLUDES = # python3 -m pybind11 --includes
-PYTHON_INCLUDES = -I/home/mdevino/anaconda3/envs/h/include/python3.6m -I/home/mdevino/anaconda3/envs/h/lib/python3.6/site-packages/pybind11/include
+PYTHON_INCLUDES = # python3 -m pybind11 --includes
 
 all:
 	mkdir -p $(PATHEXEC)
@@ -58,7 +51,7 @@ clean:
 
 ##### COMPILER CONFIGURATION's
 # Compiler
-CPP = $(CONDA_ACTIVATE) && g++
+CPP = g++
 # Compilation parameters
 CCOPT = -std=c++11 -shared -m64 -O3 -g -fPIC $(PYTHON_INCLUDES) -fexceptions -DIL_STD -pthread #-DDEBUG
 
