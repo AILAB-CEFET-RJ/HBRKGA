@@ -39,7 +39,7 @@ private:
 	ES* EliteSet;
 	RandomWalk* BL;
 public:
-	SampleDecoder(ES* _EliteSet, RandomWalk* _BL);
+	SampleDecoder(ES* _EliteSet, RandomWalk* _BL, vector< pair<double,double> > pardom);
 	~SampleDecoder();
 
 	double decode(std::vector< double >& chromosome) const;

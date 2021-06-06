@@ -3,53 +3,96 @@ HBRKGA is a hyperparameter optimization method for Neural Networks based on BRKG
 
 ![hbrkga_flux](https://github.com/MLRG-CEFET-RJ/HBRKGA/blob/main/hbrkga.png)
 
-## Requirements
-
-Python 3.6
-Tensorflow 1.13.1
-Numpy 1.16.13
-Pandas 0.24.2
-SciKit Learn 0.21.1
-Matplotlib 3.2.2
-C++ STL
-
-## Datasets
-
-All datasets are publicly available at https://doi.org/10.5281/zenodo.4252922. Datasets must be placed in the [data](https://github.com/MLRG-CEFET-RJ/HBRKGA/tree/main/src/python/datasets) folder.
 
 ## Usage
 
-Install/load the requirements packages.
 
-To setup the dataset, go to the C++ to python bridge in evaluate function at [data](https://github.com/MLRG-CEFET-RJ/HBRKGA/blob/main/src/random_walk.cpp) and specifies one dataset:
-```
-python ./src/python/neural_network.py fashion (Fashion MNIST)
-python ./src/python/neural_network.py mnist (MNIST)
-python ./src/python/neural_network.py rectangles (Rectangles)
-python ./src/python/neural_network.py cosmos (COSMOS)
-```
-This process can be also add to python [data](https://github.com/MLRG-CEFET-RJ/HBRKGA/blob/main/src/python/neural_network.py) file with another trainning/validation set.
 
-To setup the hyperparameters go to [data](https://github.com/MLRG-CEFET-RJ/HBRKGA/blob/main/src/BRKGA/SampleDecoder.cpp) and edit/add the Sample Decoder par_dom.
-Each par_dom represents a hyperparameter with min/max value to optimize.
+## Setup
+
+The setup can be divided in three major steps:
+
+1. Installing necessary software
+2. Configuring Conda environment
+3. Configuring Makefile and building the project
+
+### Installing necessary software
+
+[Anaconda](https://www.anaconda.com) is recommended to create a python virtual environment. Additionally, it is recommended to install TensorFlow with GPU support, if available.
+
+[This page](https://www.tensorflow.org/install/gpu) presents the steps needed to install Tensorflow with GPU support. If you are using WSL and have a graphics card available follow [this tutorial to install Tensorflow with DirectML](https://www.tensorflow.org/install/gpu) instead.
+
+### Configuring Conda environment
+
+The following requirements are needed to install in your conda environment.
+	* Python 3.6
+	* Tensorflow 1.15
+	* Bayesian Optimization
+	* Pandas
+	* Matplotlib
+	* Pybind11
+	* Scikit Learn
+
+You can install the packages above in a conda environment by running the commands below.
 ```
-	par_dom.push_back(make_pair(1000,2000));
-	par_dom.push_back(make_pair(2000,4000));
-	par_dom.push_back(make_pair(2000,6000));
-	par_dom.push_back(make_pair(0.000001,0.1));
-	par_dom.push_back(make_pair(0,0.001));
+conda create -n hbrkga python=3.6 tensorflow-gpu matplotlib scikit-learn pandas -y
+conda activate hbrkga
+conda install -c conda-forge bayesian-optimization -y
 ```
 
-To compile the C++ project:
+If you are on WSL and would like to enable GPU support, you may use the `env-wsl.yml` in this repository to create the conda environment with the command below.
+
+```
+conda env create -f env-wsl.yml
+```
+
+If you would like to create the environment from scratch, just replace `tensorflow-gpu` with `tensorflow-directml`.
+
+```
+conda create -n hbrkga python=3.6 tensorflow-directml matplotlib scikit-learn pandas -y
+conda activate hbrkga
+conda install -c conda-forge bayesian-optimization -y
+```
+
+### Configuring Makefile and building the project
+
+With the conda environment activated, run the two steps below to configure
+
+1. Run `python3 -m pybind11 --includes` and add the output of the command to the `PYTHON_INCLUDES` variable in the Makefile at the root of the project.
+
+2. Run `python3-config --extension-suffix` and paste the output of it to the variable `EXTENSION` to the Makefile in the root of the project.
+
+3. Once the variables were set up correctly, the project can be compiled by running.
+
 ```
 make clean
 make
 ```
 
-To execute the HBRKGA optimization process:
-```
-nohup ./bin/hypAG > hbrkga.log &
-```
+## Additional Steps
+
+1. Install gdb, if you need debugging. On Ubuntu, you can do so by running `sudo apt install gdb`.
+
+## Usage
+
+HBRKGA can be used as a function of the module `hbrkga`. test.py illustrates the usage of it. Note that the python script must be in the same directory as the library built, or the path containing the library must be added to the `PYTHONPATH` environment variable.
+
+## Current Limitations
+
+At this point, the only model available to optimize is a three-layer fully connected neural network, with the following parameters:
+
+* The number of neurons for the first, second and third layers
+* The learning rate
+* The regularization parameter (beta)
+
+## Future Work
+
+The following steps could be implemented to evolve the code in this repository:
+
+* Enable different models to be optimized, other than a three-layer fully connected neural network
+* Allow users to use different datasets (sent as parameters)
+* Facilicate the setup process (find a way to activate the conda environment during the Makefile execution to avoid having to set up variables manually)
+* Publish the project as a Python package
 
 ## Citation
 ```

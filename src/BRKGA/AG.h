@@ -6,7 +6,7 @@
 #include "../ES.h"
 class AG{
 	private:
-	const vector< pair<double,double> > par_dom = {{1000,2000},{2000,4000},{2000,6000},{1E-6,1E-1},{0,1E-3}};
+	vector< pair<double,double> > par_dom;
 
 	unsigned n;		// size of chromosomes
 	unsigned p;	// size of population ------populacao---------
@@ -31,7 +31,10 @@ class AG{
 	unsigned MAX_GENS;	// run for 1000 gens
 
 	public:
-	AG(ES * _EliteSet, unsigned _n, unsigned _p, double _pe, double _pm, double _rhoe, unsigned _K, unsigned _MAXT, long unsigned _rngSeed, unsigned _generation, unsigned _X_INTVL, unsigned _X_NUMBER, unsigned _MAX_GENS){
+	AG(ES * _EliteSet, unsigned _n, unsigned _p, double _pe, double _pm, 
+		double _rhoe, unsigned _K, unsigned _MAXT, long unsigned _rngSeed, 
+		unsigned _generation, unsigned _X_INTVL, unsigned _X_NUMBER, 
+		unsigned _MAX_GENS, vector< pair<double,double> > pardom) {
 
 		
 	n=_n;
@@ -47,11 +50,12 @@ class AG{
 	X_NUMBER=_X_NUMBER;
 	MAX_GENS=_MAX_GENS;
 	EliteSet = _EliteSet;
+	par_dom = pardom;
 
-	BL = new RandomWalk();
+	BL = new RandomWalk(par_dom);
 	rng = new MTRand(rngSeed);
 	
-	decoder = new SampleDecoder(EliteSet, BL);
+	decoder = new SampleDecoder(EliteSet, BL, par_dom);
 	
 	algorithm = new BRKGA< SampleDecoder, MTRand > (n, p, pe, pm, rhoe, (*decoder), (*rng), K, MAXT);
 
@@ -65,7 +69,6 @@ class AG{
 	};
 
 	void solve(){
-
 		FWChrono Tempo;
 		Tempo.start();
 		do {

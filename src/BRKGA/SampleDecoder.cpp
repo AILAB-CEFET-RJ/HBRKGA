@@ -9,12 +9,9 @@
 
 #define Infinity 99999999999999
 
-SampleDecoder::SampleDecoder(ES * _EliteSet, RandomWalk* _BL){
-	par_dom.push_back(make_pair(1000,2000));
-	par_dom.push_back(make_pair(2000,4000));
-	par_dom.push_back(make_pair(2000,6000));
-	par_dom.push_back(make_pair(0.000001,0.1));
-	par_dom.push_back(make_pair(0,0.001));
+SampleDecoder::SampleDecoder(ES * _EliteSet, RandomWalk* _BL,
+		vector< pair<double,double> > pardom){
+	par_dom = pardom;
 	EliteSet = _EliteSet;
 	BL = _BL;
 }

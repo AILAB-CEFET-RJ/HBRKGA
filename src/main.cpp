@@ -8,6 +8,7 @@
 #include "path_relinking.h"
 #include <time.h>
 #include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
 
 using namespace std;
 namespace py = pybind11;
@@ -20,52 +21,85 @@ void usage(char *argv[]){
 	cout << "\t"<<argv[0]<<endl;
 }
 
+int hbrkga(py::list params, py::dict ga_params) {
+	// vector< pair<double,double> > pardom = {{1000,2000},{2000,4000},{2000,6000},{1E-6,1E-1},{0,1E-3}};
 
-int main(int argc, char *argv[]){
-
-	if(argc!=1){
-		usage(argv);
-	}else{
-
-		FWChrono Tempo;
-		ES* EliteSet = new ES (5);
-		unsigned num_par=5;
-		time_t seed;
-		srand(time(0)); 
-		seed = time(0);
-
-		Tempo.start();
-		AG Meta(EliteSet,num_par,10,0.2,0.1,0.7,1,1,seed,0,2,5,6); 
-		//Pop size 10 / 6 generations plus RW
-		Meta.solve();
-
-		Tempo.stop();
-
-		cout<<"--------------------------------------------------"<<endl;
-		cout<<Meta.getBest()<<endl;
-		cout<<Tempo.getStopTime()<<endl;
-		cout<<"--------------------------------------------------"<<endl;
-
-		delete EliteSet;
+	std::vector<std::pair<double,double>> pardom = params.cast<std::vector<std::pair<double, double>>>();
+	std::cout << "Parameters to be optimized" << std::endl;
+	for(const pair<double,double> &i : pardom){
+		cout << i.first << " " << i.second << endl;
 	}
-	return 0;
-}
+	std::cout << std::endl;
 
-
-int hbrkga(size_t eg, unsigned n, unsigned p, double pe, double pm, double rhoe,
-				 unsigned k, unsigned maxT, long unsigned rngSeed, unsigned generation,
-				 unsigned xIntvl, unsigned xNumber, unsigned maxGens)
-{
+	size_t eg;
+	unsigned n;
+	unsigned p;
+	double pe;
+	double pm;
+	double rhoe;
+	unsigned k;
+	unsigned maxT;
+	long unsigned rngSeed;
+	unsigned generation;
+	unsigned xIntvl;
+	unsigned xNumber;
+	unsigned maxGens;
+	
+	// Genetic Algorithm parameters parsing
+	for(auto param : ga_params) {
+		std::string key = std::string(py::str(param.first));
+		if(key == "eg"){
+			eg = param.second.cast<size_t>();
+		} else if(key == "n"){
+			n = param.second.cast<int>();
+		} else if(key == "p"){
+			p = param.second.cast<int>();
+		} else if(key == "pe"){
+			pe = param.second.cast<double>();
+		} else if(key == "pm"){
+			pm = param.second.cast<double>();
+		} else if(key == "rhoe"){
+			rhoe = param.second.cast<double>();
+		} else if(key == "k"){
+			k = param.second.cast<int>();
+		} else if(key == "maxT"){
+			maxT = param.second.cast<int>();
+		} else if(key == "rngSeed"){
+			rngSeed = param.second.cast<long>();
+		} else if(key == "generation"){
+			generation = param.second.cast<int>();
+		} else if(key == "xIntvl"){
+			xIntvl = param.second.cast<int>();
+		} else if(key == "xNumber"){
+			xNumber = param.second.cast<int>();
+		} else if(key == "maxGens"){
+			maxGens = param.second.cast<int>();
+		}
+	}
+	
+	std::cout << "Genetic Algorithm parameters" << std::endl;
+	std::cout << "eg: " << eg << std::endl;
+	std::cout << "n: " << n << std::endl;
+	std::cout << "p: " << p << std::endl;
+	std::cout << "pe: " << pe << std::endl;
+	std::cout << "pm: " << pm << std::endl;
+	std::cout << "rhoe: " << rhoe << std::endl;
+	std::cout << "k: " << k << std::endl;
+	std::cout << "maxT: " << maxT << std::endl;
+	std::cout << "rngSeed: " << rngSeed << std::endl;
+	std::cout << "generation: " << generation << std::endl;
+	std::cout << "xIntvl: " << xIntvl << std::endl;
+	std::cout << "xNumber: " << xNumber << std::endl;
+	std::cout << "maxGens: " << maxGens << std::endl;
+	// Genetic Algorithm parameters parsing - end
 
 	FWChrono Tempo;
 	ES* EliteSet = new ES (eg);
 
 	cout << "Começou!" << endl;
 	AG Meta(EliteSet, n, p, pe, pm, rhoe, k, maxT, rngSeed, generation, xIntvl, xNumber,
-					maxGens);
+					maxGens, pardom);
 
-	Meta.solve();
-		//Pop size 10 / 6 generations plus RW
 	Meta.solve();
 
 	Tempo.stop();
@@ -78,14 +112,12 @@ int hbrkga(size_t eg, unsigned n, unsigned p, double pe, double pm, double rhoe,
 	delete EliteSet;
 
 	cout << "Terminou!" << endl;
+
+	return 0;
 }
 
 PYBIND11_MODULE(hbrkga, m) {
     m.doc() = "HBRKGA module"; // optional module docstring
 
-    m.def("hbrkga", &hbrkga, "HBRKGA main function", "eg"_a=5,
-      "n"_a=100, "p"_a=1000, "pe"_a=0.2, "pm"_a=0.1, "rhoe"_a=0.7, 
-			"k"_a=1, "maxT"_a=1, "rngSeed"_a=0, "generation"_a=0, 
-			"xIntvl"_a=100, "xNumber"_a=2, "maxGens"_a=1000
-		);
+    m.def("hbrkga", &hbrkga, "HBRKGA main function");
 }

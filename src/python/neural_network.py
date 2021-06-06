@@ -13,6 +13,7 @@ warnings.filterwarnings("ignore")
 logging.disable(logging.WARNING)
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 from sklearn.metrics import f1_score
+import pathlib
 
 '''
 System args: LAYER1, LAYER2, LAYER3, LR, BETA
@@ -24,15 +25,15 @@ BETA = beta parameter to regularization. 0 to ignore
 '''
 
 #Train/dev/test path whitespace separated file without header. Target in the last column (data_utils)
-
+current_script_path = str(pathlib.Path(__file__).parent.absolute())
 if str(sys.argv[1]) == 'cosmos':
-  train_path =  "/mnt/sdb/home2/mserqueira/COSMOS/dataset/cosmos_train_SMOTE.csv" #COSMOS
-  test_path = "/mnt/sdb/home2/mserqueira/COSMOS/dataset/cosmos_val.csv"
+  train_path =  current_script_path + "/dataset/cosmos_train_SMOTE.csv" #COSMOS
+  test_path = current_script_path + "/dataset/cosmos_val.csv"
   hyper_args = du.hyper_space('cosmos')
 
 if str(sys.argv[1]) == 'rectangles':
-  train_path =  "/home/mdevino/dev/ppcic/hbrkga/src/python/datasets/rectangles_train.csv" #RECTANGLES
-  test_path = "/home/mdevino/dev/ppcic/hbrkga/src/python/datasets/rectangles_val.csv"
+  train_path =  current_script_path + "/datasets/rectangles_train.csv" #RECTANGLES
+  test_path = current_script_path + "/datasets/rectangles_val.csv"
   hyper_args = du.hyper_space('others')
 
 if str(sys.argv[1]) == 'mnist':

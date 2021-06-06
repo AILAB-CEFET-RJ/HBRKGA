@@ -25,13 +25,9 @@ class RandomWalk
 		mt19937 * mt;
 
 	public:
-		RandomWalk(){
+		RandomWalk(vector< pair<double,double> > pardom){
 			mt = new mt19937 (time(0));
-			par_dom.push_back(make_pair(1000,2000));
-			par_dom.push_back(make_pair(2000,4000));
-			par_dom.push_back(make_pair(2000,6000));
-			par_dom.push_back(make_pair(1E-6,1E-1));
-			par_dom.push_back(make_pair(0,1E-3));
+			par_dom = pardom;
 		};
 		~RandomWalk(){delete mt;};
 
