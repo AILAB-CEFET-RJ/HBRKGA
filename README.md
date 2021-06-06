@@ -20,7 +20,7 @@ The setup can be divided in three major steps:
 
 [Anaconda](https://www.anaconda.com) is recommended to create a python virtual environment. Additionally, it is recommended to install TensorFlow with GPU support, if available.
 
-[This page](https://www.tensorflow.org/install/gpu) presents the steps needed to install Tensorflow with GPU support. If you are using WSL and have a graphics card available follow [this tutorial to install Tensorflow with DirectML](https://www.tensorflow.org/install/gpu) instead.
+[This page](https://www.tensorflow.org/install/gpu) presents the steps needed to install Tensorflow with GPU support. If you are using WSL and have a graphics card available follow [this tutorial to install Tensorflow with DirectML](https://docs.microsoft.com/en-us/windows/win32/direct3d12/gpu-tensorflow-wsl) instead.
 
 ### Configuring Conda environment
 
