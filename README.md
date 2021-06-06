@@ -3,11 +3,6 @@ HBRKGA is a hyperparameter optimization method for Neural Networks based on BRKG
 
 ![hbrkga_flux](https://github.com/MLRG-CEFET-RJ/HBRKGA/blob/main/hbrkga.png)
 
-
-## Usage
-
-
-
 ## Setup
 
 The setup can be divided in three major steps:
@@ -25,13 +20,14 @@ The setup can be divided in three major steps:
 ### Configuring Conda environment
 
 The following requirements are needed to install in your conda environment.
-	* Python 3.6
-	* Tensorflow 1.15
-	* Bayesian Optimization
-	* Pandas
-	* Matplotlib
-	* Pybind11
-	* Scikit Learn
+
+* Python 3.6
+* Tensorflow 1.15
+* Bayesian Optimization
+* Pandas
+* Matplotlib
+* Pybind11
+* Scikit Learn
 
 You can install the packages above in a conda environment by running the commands below.
 ```
