@@ -37,18 +37,18 @@ if str(sys.argv[1]) == 'rectangles':
   hyper_args = du.hyper_space('others')
 
 if str(sys.argv[1]) == 'mnist':
-  train_path =  "/mnt/sdb/home2/mserqueira/COSMOS/dataset/mnist_train.csv" #RECTANGLES
-  test_path = "/mnt/sdb/home2/mserqueira/COSMOS/dataset/mnist_val.csv"
+  train_path = current_script_path + "/dataset/mnist_train.csv" #RECTANGLES
+  test_path = current_script_path + "/dataset/mnist_val.csv"
   hyper_args = du.hyper_space('others')
 
 if str(sys.argv[1]) == 'mnist_back_rot':
-  train_path =  "/mnt/sdb/home2/mserqueira/BRKGA/src/python/datasets/mnist_all_background_images_rotation_normalized_train.csv" #RECTANGLES
-  test_path = "/mnt/sdb/home2/mserqueira/BRKGA/src/python/datasets/mnist_all_background_images_rotation_normalized_val.csv"
+  train_path =  current_script_path +  "/datasets/mnist_all_background_images_rotation_normalized_train.csv" #RECTANGLES
+  test_path =  current_script_path + "/datasets/mnist_all_background_images_rotation_normalized_val.csv"
   hyper_args = du.hyper_space('others')
 
 if str(sys.argv[1]) == 'fashion':
-  train_path =  "/home/mserqueira/COSMOS/dataset/fashion_mnist_train.csv" #RECTANGLES
-  test_path = "/home/mserqueira/COSMOS/dataset/fashion_mnist_val.csv"
+  train_path = current_script_path + "/dataset/fashion_mnist_train.csv" #RECTANGLES
+  test_path = current_script_path + "/dataset/fashion_mnist_val.csv"
   hyper_args = du.hyper_space('others')
 
 epochs_no = 300 #Number of epochs
